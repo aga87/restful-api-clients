@@ -6,6 +6,18 @@ import { logger } from './startup/logger';
 dotenv.config();
 const app: Application = express();
 
+process.on('uncaughtException', (ex: Error) => {
+  logger.error(ex.message, ex);
+  // Gracefully shutdown the application
+  process.exit(1);
+});
+
+process.on('unhandledRejection', (ex: Error) => {
+  logger.error(ex.message, ex);
+  // Gracefully shutdown the application
+  process.exit(1);
+});
+
 routes(app);
 
 const { PORT } = process.env;
