@@ -1,14 +1,13 @@
-import { RequestHandler, Request, Response } from 'express';
-import { logger } from '../startup/logger';
+import { RequestHandler, Request, Response, NextFunction } from 'express';
 
 export const getHealthCheck: RequestHandler = async (
   req: Request,
-  res: Response
+  res: Response,
+  next: NextFunction
 ) => {
   try {
     return res.send('Hello World!');
   } catch (err: unknown) {
-    logger.error('Unexpected Server Error:', err);
-    return res.status(500).send('Unexpected Server Error');
+    next(err);
   }
 };
