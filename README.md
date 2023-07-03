@@ -25,6 +25,14 @@ Compiles the TypeScript source code into JavaScript. It is typically used before
 
 Runs the ESLint linter on all TypeScript files. ESLint helps enforce code quality and style guidelines by highlighting potential issues or violations, based on the specified ESLint configuration.
 
+### `npm run test`
+
+Sets the environment to `test` and runs the tests using the Jest test runner. It provides verbose output for the test results.
+
+### `npm run test:watch`
+
+Sets the environment to `test` and runs the tests in watch mode, where Jest watches for changes in the test files and automatically reruns the tests. It provides verbose output for the test results.
+
 ## Tech Stack
 
 ### Production Dependencies
@@ -41,3 +49,6 @@ Runs the ESLint linter on all TypeScript files. ESLint helps enforce code qualit
 - [ESLint](https://www.npmjs.com/package/eslint) with [Typescript parser](https://www.npmjs.com/package/@typescript-eslint/parser) enforces coding style and helps catch errors in development.
 - [ts-node](https://www.npmjs.com/package/ts-node) - TypeScript execution environment and REPL for Node.js.
 - [Nodemon](https://www.npmjs.com/package/nodemon) - a utility that automatically restarts a Node.js server when changes are detected in source files.
+- [Jest](https://jestjs.io/) - JavaScript testing framework and test runner.
+- [SuperTest](https://www.npmjs.com/package/supertest) - a library for testing HTTP servers in Node.js, providing a high-level abstraction for testing HTTP requests and responses.
+- [ts-jest](https://www.npmjs.com/package/ts-jest) - a TypeScript preprocessor for Jest that enables running TypeScript code directly in Jest tests.
