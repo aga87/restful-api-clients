@@ -1,6 +1,13 @@
 import { Client } from '../models/Client';
 import type { ClientRecord, NewClient } from '../types/types';
 
+export const getClientsFromDB = async (): Promise<ClientRecord[]> => {
+  const clients: ClientRecord[] = await Client.find({})
+    .select('-__v')
+    .sort({ name: 1 });
+  return clients;
+};
+
 export const addClientToDB = async (
   newClient: NewClient
 ): Promise<ClientRecord> => {

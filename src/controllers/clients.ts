@@ -1,6 +1,21 @@
 import { RequestHandler, Request, Response, NextFunction } from 'express';
-import { addClientToDB } from '../services/clients-db';
+import { getClientsFromDB, addClientToDB } from '../services/clients-db';
 import { validateClientSchema } from '../models/Client';
+
+export const getClients: RequestHandler = async (
+  _req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const clients = await getClientsFromDB();
+    return res.send({
+      clients
+    });
+  } catch (err) {
+    next(err);
+  }
+};
 
 export const addClient: RequestHandler = async (
   req: Request,

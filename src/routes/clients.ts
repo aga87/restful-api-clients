@@ -1,7 +1,9 @@
 import { Router } from 'express';
-import { addClient } from '../controllers/clients';
+import { getClients, addClient } from '../controllers/clients';
 
 const router = Router();
+
+router.get('/', getClients);
 
 router.post('/', addClient);
 
