@@ -3,7 +3,7 @@ import request from 'supertest';
 import { app } from '../../../index';
 import { Client } from '../../../models/Client';
 import { EncryptionService } from '../../../services/encryption';
-import type { NewClient } from '../../../types/types';
+import type { NewClient, ClientRecord } from '../../../types/types';
 
 describe('/api/v1/clients', () => {
   beforeEach(async () => {
@@ -19,6 +19,71 @@ describe('/api/v1/clients', () => {
   afterEach(async () => {
     // Disconnect the DB
     await mongoose.connection.close();
+  });
+
+  describe('GET /', () => {
+    const act = async () => await request(app).get('/api/v1/clients');
+
+    beforeEach(async () => {
+      // Happy path: prepare test data with encrypted values
+      const clients: NewClient[] = [
+        {
+          firstName: EncryptionService.encryptData('a'),
+          lastName: EncryptionService.encryptData('a'),
+          address: {
+            postalCode: EncryptionService.encryptData('a1')
+          }
+        },
+        {
+          firstName: EncryptionService.encryptData('b'),
+          lastName: EncryptionService.encryptData('b'),
+          address: {
+            postalCode: EncryptionService.encryptData('b2')
+          }
+        }
+      ];
+      await Client.collection.insertMany(clients);
+    });
+
+    afterEach(async () => {
+      // Clean up the database
+      await Client.deleteMany({});
+    });
+
+    describe('Success:', () => {
+      it('should return 200 status code', async () => {
+        const res = await act();
+        expect(res.status).toBe(200);
+      });
+
+      it('should return all clients in a decrypted format', async () => {
+        const res = await act();
+        const { clients } = res.body;
+        expect(
+          clients.some((client: ClientRecord) => client.firstName === 'a')
+        ).toBeTruthy();
+        expect(
+          clients.some((client: ClientRecord) => client.lastName === 'a')
+        ).toBeTruthy();
+        expect(
+          clients.some(
+            (client: ClientRecord) => client.address.postalCode === 'a1'
+          )
+        ).toBeTruthy();
+        expect(
+          clients.some((client: ClientRecord) => client.firstName === 'b')
+        ).toBeTruthy();
+        expect(
+          clients.some((client: ClientRecord) => client.lastName === 'b')
+        ).toBeTruthy();
+        expect(
+          clients.some(
+            (client: ClientRecord) => client.address.postalCode === 'b2'
+          )
+        ).toBeTruthy();
+        expect(clients.length).toBe(2);
+      });
+    });
   });
 
   describe('POST /', () => {
