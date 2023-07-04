@@ -8,3 +8,5 @@ export type ClientRecord = {
     postalCode: string;
   };
 };
+
+export type NewClient = Omit<ClientRecord, '_id'>;
