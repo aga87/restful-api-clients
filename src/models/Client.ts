@@ -1,4 +1,5 @@
 import { Schema, model } from 'mongoose';
+import Joi from 'joi';
 import { EncryptionService } from '../services/encryption';
 import type { ClientRecord } from '../types/types';
 
@@ -46,3 +47,26 @@ clientSchema.post('find', function (docs: ClientRecord[]) {
 });
 
 export const Client = model<ClientRecord>('Client', clientSchema);
+
+export const validateClientSchema = (newClient: unknown): null | string[] => {
+  const validClientSchema = Joi.object({
+    firstName: Joi.string().trim().max(100).required(),
+    lastName: Joi.string().trim().max(100).required(),
+    address: Joi.object({
+      postalCode: Joi.string().trim().max(30).required()
+    }).required()
+  });
+
+  const { error } = validClientSchema.validate(
+    newClient,
+    // Get all errors (not only the first one)
+    { abortEarly: false }
+  );
+
+  if (error) {
+    const errorList: string[] = [];
+    error.details.forEach((error) => errorList.push(error.message));
+    return errorList;
+  }
+  return null;
+};
