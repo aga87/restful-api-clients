@@ -33,4 +33,16 @@ clientSchema.pre<ClientRecord>('save', function (next) {
   next();
 });
 
+// Post-find middleware
+clientSchema.post('find', function (docs: ClientRecord[]) {
+  // Decrypt the firstName, lastName, and address.postalCode fields for each retrieved document
+  docs.forEach((doc) => {
+    doc.firstName = EncryptionService.decryptData(doc.firstName);
+    doc.lastName = EncryptionService.decryptData(doc.lastName);
+    doc.address.postalCode = EncryptionService.decryptData(
+      doc.address.postalCode
+    );
+  });
+});
+
 export const Client = model<ClientRecord>('Client', clientSchema);
