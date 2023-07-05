@@ -23,6 +23,8 @@ The **health check** endpoint is used to verify the operational status and healt
 
 All client data is stored in the database in an **encrypted** format. For this purpose, the API leverages the capabilities of **Google Cloud KMS (Key Management Service)**, a trusted managed service offering secure key storage, rotation, and encryption/decryption functionalities.
 
+CORS middleware is used to set and enforce the **Cross-Origin Resource Sharing policy**. It ensures that only authorized (whitelisted) origins can access server resources.
+
 ### API Documentation
 
 The API is self-discoverable thanks to the use of **HATEOAS**. HATEOAS provide links to related resources within the responses, allowing clients to easily navigate and discover the API's capabilities without requiring external documentation.
@@ -71,6 +73,7 @@ Sets the environment to `test` and runs the tests in watch mode, where Jest watc
 - [@google-cloud/kms](https://www.npmjs.com/package/@google-cloud/kms) - Google Cloud Key Management Service (KMS) API client for Node.js.
 - [Winston](https://www.npmjs.com/package/winston) - a library for logging and managing messages in a Node.js application.
 - [dotenv](https://www.npmjs.com/package/dotenv) - a library for loading environment variables from a .env file.
+- [cors](https://www.npmjs.com/package/cors) - Node.js CORS middleware for setting Cross-Origin Resource Sharing policy.
 
 ### Development Dependencies
 
