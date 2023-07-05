@@ -2,7 +2,6 @@ import mongoose from 'mongoose';
 import request from 'supertest';
 import { app } from '../../../index';
 import { Client } from '../../../models/Client';
-import { EncryptionService } from '../../../services/encryption';
 import type { NewClient, ClientRecord } from '../../../types/types';
 
 describe('/api/v1/clients', () => {
@@ -25,24 +24,28 @@ describe('/api/v1/clients', () => {
     const act = async () => await request(app).get('/api/v1/clients');
 
     beforeEach(async () => {
-      // Happy path: prepare test data with encrypted values
+      // Happy path: populate the DB with test data
       const clients: NewClient[] = [
         {
-          firstName: EncryptionService.encryptData('a'),
-          lastName: EncryptionService.encryptData('a'),
+          firstName: 'a',
+          lastName: 'a',
           address: {
-            postalCode: EncryptionService.encryptData('a1')
+            postalCode: 'a1'
           }
         },
         {
-          firstName: EncryptionService.encryptData('b'),
-          lastName: EncryptionService.encryptData('b'),
+          firstName: 'b',
+          lastName: 'b',
           address: {
-            postalCode: EncryptionService.encryptData('b2')
+            postalCode: 'b2'
           }
         }
       ];
-      await Client.collection.insertMany(clients);
+
+      for (const clientData of clients) {
+        const client = new Client(clientData);
+        await client.save();
+      }
     });
 
     afterEach(async () => {
@@ -51,7 +54,7 @@ describe('/api/v1/clients', () => {
     });
 
     describe('Success:', () => {
-      it('should return 200 status code', async () => {
+      it('should return the 200 status code', async () => {
         const res = await act();
         expect(res.status).toBe(200);
       });
@@ -151,12 +154,9 @@ describe('/api/v1/clients', () => {
     });
 
     describe('If the client data is valid / Success:', () => {
-      it('should save the client in the DB in an encrypted format', async () => {
-        await act();
-        const client = await Client.find({
-          firstName: EncryptionService.encryptData('a')
-        });
-        expect(client).not.toBeNull();
+      it('should return the 201 status code', async () => {
+        const res = await act();
+        expect(res.status).toBe(201);
       });
 
       it('should return the client in a decrypted format', async () => {
@@ -168,9 +168,24 @@ describe('/api/v1/clients', () => {
         expect(client).toHaveProperty('address.postalCode', 'a1');
       });
 
-      it('should return the 201 status code', async () => {
-        const res = await act();
-        expect(res.status).toBe(201);
+      it('should save the client in the DB in an encrypted format', async () => {
+        await act();
+        // The document was saved in the DB
+        const clientsTotal = await Client.countDocuments({});
+        expect(clientsTotal).toBe(1);
+        // But all fields were encrypted
+        const clients1 = await Client.find({
+          firstName: 'a'
+        });
+        expect(clients1.length).toBe(0);
+        const clients2 = await Client.find({
+          lastName: 'a'
+        });
+        expect(clients2.length).toBe(0);
+        const clients3 = await Client.find({
+          'address.postalCode': 'a1'
+        });
+        expect(clients3.length).toBe(0);
       });
     });
   });
