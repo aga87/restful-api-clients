@@ -31,5 +31,12 @@ describe('/ - HEALTH CHECK', () => {
       const res = await act();
       expect(res.status).toBe(200);
     });
+
+    it('should include HATEOAS when the service is healthy', async () => {
+      const res = await act();
+      expect(res.status).toBe(200);
+      const { _links } = res.body;
+      expect(_links.length).toBeGreaterThanOrEqual(2);
+    });
   });
 });

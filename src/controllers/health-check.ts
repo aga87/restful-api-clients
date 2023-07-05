@@ -1,5 +1,6 @@
 import { RequestHandler, Request, Response, NextFunction } from 'express';
 import { isDBConnected } from '../startup/db';
+import { clientsHATEOAS, selfHATEOAS } from '../utils/hateoas';
 
 export const getHealthCheck: RequestHandler = async (
   req: Request,
@@ -13,12 +14,18 @@ export const getHealthCheck: RequestHandler = async (
     if (isConnected) {
       return res.send({
         serverHealthCheck,
-        DBHealthCheck: 'Healthy. DB connected.'
+        DBHealthCheck: 'Healthy. DB connected.',
+        _links: [
+          selfHATEOAS(req),
+          clientsHATEOAS().clients,
+          clientsHATEOAS().addClient
+        ]
       });
     } else {
       return res.status(503).send({
         serverHealthCheck,
-        DBHealthCheck: 'Unhealthy. DB connection not established.'
+        DBHealthCheck: 'Unhealthy. DB connection not established.',
+        _links: [selfHATEOAS(req)]
       });
     }
   } catch (err: unknown) {

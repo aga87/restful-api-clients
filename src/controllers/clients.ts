@@ -1,16 +1,18 @@
 import { RequestHandler, Request, Response, NextFunction } from 'express';
 import { getClientsFromDB, addClientToDB } from '../services/clients-db';
 import { validateClientSchema } from '../models/Client';
+import { clientsHATEOAS, selfHATEOAS } from '../utils/hateoas';
 
 export const getClients: RequestHandler = async (
-  _req: Request,
+  req: Request,
   res: Response,
   next: NextFunction
 ) => {
   try {
     const clients = await getClientsFromDB();
     return res.send({
-      clients
+      clients,
+      _links: [selfHATEOAS(req), clientsHATEOAS().addClient]
     });
   } catch (err) {
     next(err);
@@ -24,7 +26,15 @@ export const addClient: RequestHandler = async (
 ) => {
   const newClient = req.body;
   const error = validateClientSchema(newClient);
-  if (error) return res.status(400).send(error);
+  if (error)
+    return res.status(400).send({
+      error,
+      _links: [
+        selfHATEOAS(req),
+        clientsHATEOAS().addClient,
+        clientsHATEOAS().clients
+      ]
+    });
 
   try {
     const client = await addClientToDB(newClient);
@@ -36,7 +46,8 @@ export const addClient: RequestHandler = async (
     // );
 
     res.status(201).send({
-      client
+      client,
+      _links: [selfHATEOAS(req), clientsHATEOAS().clients]
     });
   } catch (err) {
     next(err);
