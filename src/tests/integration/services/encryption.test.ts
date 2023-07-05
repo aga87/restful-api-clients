@@ -5,26 +5,25 @@ describe('EncryptionService', () => {
 
   let encryptedData: any;
 
-  beforeEach(() => {
-    encryptedData = EncryptionService.encryptData(data);
+  beforeAll(async () => {
+    encryptedData = await EncryptionService.encryptData(data);
   });
 
   describe('encryptData', () => {
-    it('should encrypt the data and return a valid hexadecimal string', () => {
+    it('should encrypt the data and return a valid base64 string', () => {
       // Encrypted data should not be the same as the original data
       expect(encryptedData).not.toBe(data);
       // Encrypted data should be a non-empty string
       expect(typeof encryptedData).toBe('string');
       expect(encryptedData.length).toBeGreaterThan(0);
-      // Encrypted data should be a valid hexadecimal string
-      const hexRegex = /^[0-9a-fA-F]+$/;
-      expect(hexRegex.test(encryptedData)).toBe(true);
+      const base64Regex = /^[a-zA-Z0-9+/]+={0,2}$/;
+      expect(base64Regex.test(encryptedData)).toBe(true);
     });
   });
 
   describe('decryptData', () => {
-    it('should decrypt the encrypted data', () => {
-      const decryptedData = EncryptionService.decryptData(encryptedData);
+    it('should decrypt the encrypted data', async () => {
+      const decryptedData = await EncryptionService.decryptData(encryptedData);
       expect(decryptedData).toBe(data);
     });
   });

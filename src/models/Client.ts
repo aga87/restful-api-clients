@@ -21,29 +21,29 @@ const clientSchema = new Schema<ClientRecord>({
 });
 
 // Pre-save middleware
-clientSchema.pre<ClientRecord>('save', function (next) {
-  const client = this;
-
+clientSchema.pre<ClientRecord>('save', async function (next) {
   // Trim and encrypt the firstName, lastName, and address.postalCode fields
-  client.firstName = EncryptionService.encryptData(client.firstName.trim());
-  client.lastName = EncryptionService.encryptData(client.lastName.trim());
-  client.address.postalCode = EncryptionService.encryptData(
-    client.address.postalCode.trim()
+  this.firstName = await EncryptionService.encryptData(this.firstName.trim());
+  this.lastName = await EncryptionService.encryptData(this.lastName.trim());
+  this.address.postalCode = await EncryptionService.encryptData(
+    this.address.postalCode.trim()
   );
 
   next();
 });
 
 // Post-find middleware
-clientSchema.post('find', function (docs: ClientRecord[]) {
+clientSchema.post('find', async function (docs: ClientRecord[]) {
   // Decrypt the firstName, lastName, and address.postalCode fields for each retrieved document
-  docs.forEach((doc) => {
-    doc.firstName = EncryptionService.decryptData(doc.firstName);
-    doc.lastName = EncryptionService.decryptData(doc.lastName);
-    doc.address.postalCode = EncryptionService.decryptData(
-      doc.address.postalCode
-    );
-  });
+  await Promise.all(
+    docs.map(async (doc) => {
+      doc.firstName = await EncryptionService.decryptData(doc.firstName);
+      doc.lastName = await EncryptionService.decryptData(doc.lastName);
+      doc.address.postalCode = await EncryptionService.decryptData(
+        doc.address.postalCode
+      );
+    })
+  );
 });
 
 export const Client = model<ClientRecord>('Client', clientSchema);

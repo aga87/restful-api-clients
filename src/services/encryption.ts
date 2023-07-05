@@ -1,37 +1,66 @@
-import crypto from 'crypto';
+import dotenv from 'dotenv';
+import { KeyManagementServiceClient } from '@google-cloud/kms';
+
+dotenv.config();
+
+// Google KMS Client Config
+const {
+  GOOGLE_KMS_PROJECT_ID,
+  GOOGLE_KMS_LOCATION_ID,
+  GOOGLE_KMS_KEY_RING_ID,
+  GOOGLE_KMS_KEY_ID
+} = process.env;
+
+if (
+  !GOOGLE_KMS_PROJECT_ID ||
+  !GOOGLE_KMS_LOCATION_ID ||
+  !GOOGLE_KMS_KEY_RING_ID ||
+  !GOOGLE_KMS_KEY_ID
+) {
+  throw new Error(
+    'Missing required environment variables for Google Cloud KMS'
+  );
+}
+
+// Instantiate the KMS Client
+const kmsClient = new KeyManagementServiceClient();
+
+// Build the key name
+const keyName = kmsClient.cryptoKeyPath(
+  GOOGLE_KMS_PROJECT_ID,
+  GOOGLE_KMS_LOCATION_ID,
+  GOOGLE_KMS_KEY_RING_ID,
+  GOOGLE_KMS_KEY_ID
+);
 
 type EncryptionService = {
-  algorithm: string;
-  securityKey: Buffer;
-  initVector: Buffer;
-  encryptData: (data: string) => string;
-  decryptData: (encryptedData: string) => string;
+  encryptData: (data: string) => Promise<string>;
+  decryptData: (encryptedData: string) => Promise<string>;
 };
 
 export const EncryptionService: EncryptionService = {
-  algorithm: 'aes-256-cbc',
-  securityKey: crypto.randomBytes(32),
-  initVector: crypto.randomBytes(16),
-
-  encryptData: (data: string): string => {
-    const cipher = crypto.createCipheriv(
-      EncryptionService.algorithm,
-      EncryptionService.securityKey,
-      EncryptionService.initVector
-    );
-    let encryptedData = cipher.update(data, 'utf-8', 'hex');
-    encryptedData += cipher.final('hex');
-    return encryptedData;
+  encryptData: async (data: string): Promise<string> => {
+    const [result] = await kmsClient.encrypt({
+      name: keyName,
+      plaintext: Buffer.from(data, 'utf8')
+    });
+    if (result && result.ciphertext) {
+      // @ts-ignore - correct implementation based on the official docs: https://cloud.google.com/kms/docs/encrypt-decrypt
+      return result.ciphertext.toString('base64');
+    } else {
+      throw new Error('Encryption failed');
+    }
   },
 
-  decryptData: (encryptedData: string): string => {
-    const decipher = crypto.createDecipheriv(
-      EncryptionService.algorithm,
-      EncryptionService.securityKey,
-      EncryptionService.initVector
-    );
-    let decryptedData = decipher.update(encryptedData, 'hex', 'utf-8');
-    decryptedData += decipher.final('utf8');
-    return decryptedData;
+  decryptData: async (encryptedData: string): Promise<string> => {
+    const [result] = await kmsClient.decrypt({
+      name: keyName,
+      ciphertext: Buffer.from(encryptedData, 'base64')
+    });
+    if (result && result.plaintext) {
+      return result.plaintext.toString();
+    } else {
+      throw new Error('Decryption failed');
+    }
   }
 };
