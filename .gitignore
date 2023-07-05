@@ -6,3 +6,4 @@ dist
 
 # secrets 
 .env
+src/services/google-service-account.json

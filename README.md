@@ -40,6 +40,8 @@ Sets the environment to `test` and runs the tests in watch mode, where Jest watc
 - [Node.js](https://nodejs.org/en/docs/) - an open-source JavaScript runtime environment for building server-side applications.
 - [Express](https://expressjs.com/) - a web application framework for Node.js that makes it easier to build and manage APIs.
 - [Mongoose](https://mongoosejs.com/) - an object data modeling (ODM) library for [MongoDB](https://www.mongodb.com/home) - open-source NoSQL database that is well-suited for storing data in JSON-like documents.
+- [Joi](https://www.npmjs.com/package/joi) - a library for validating JavaScript objects.
+- [@google-cloud/kms](https://www.npmjs.com/package/@google-cloud/kms) - Google Cloud Key Management Service (KMS) API client for Node.js.
 - [Winston](https://www.npmjs.com/package/winston) - a library for logging and managing messages in a Node.js application.
 - [dotenv](https://www.npmjs.com/package/dotenv) - a library for loading environment variables from a .env file.
 
