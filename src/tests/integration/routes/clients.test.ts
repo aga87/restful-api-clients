@@ -86,6 +86,12 @@ describe('/api/v1/clients', () => {
         ).toBeTruthy();
         expect(clients.length).toBe(2);
       });
+
+      it('should include HATEOAS in the response', async () => {
+        const res = await act();
+        const { _links } = res.body;
+        expect(_links.length).toBeGreaterThanOrEqual(2);
+      });
     });
   });
 
@@ -186,6 +192,12 @@ describe('/api/v1/clients', () => {
           'address.postalCode': 'a1'
         });
         expect(clients3.length).toBe(0);
+      });
+
+      it('should include HATEOAS in the response', async () => {
+        const res = await act();
+        const { _links } = res.body;
+        expect(_links.length).toBeGreaterThanOrEqual(2);
       });
     });
   });

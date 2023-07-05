@@ -1,6 +1,33 @@
-# Coding Assignment: RESTful API - clients
+# Coding Assignment: Clients API (RESTful)
+
+## About
 
 View the [assignment guidelines here](https://www.craft.me/s/BajD9tAHpBbTME).
+
+### User Stories
+
+- I can create a new client record.
+- I can view a listing of all clients.
+
+### Reliability
+
+The **health check** endpoint is used to verify the operational status and health of the API.
+
+**Data validation**: The API performs data validation on incoming requests before persisting them in the database to safeguard against invalid or malformed data. This guarantees the consistency and reliability of the stored information.
+
+**Error handling** allows the API to gracefully handle and respond to errors, providing helpful messages and guidance to users.
+
+**Integration tests** ensure that the API is functioning correctly and in accordance with the requirements.
+
+### Security
+
+All client data is stored in the database in an **encrypted** format. For this purpose, the API leverages the capabilities of **Google Cloud KMS (Key Management Service)**, a trusted managed service offering secure key storage, rotation, and encryption/decryption functionalities.
+
+### API Documentation
+
+The API is self-discoverable thanks to the use of **HATEOAS**. HATEOAS provide links to related resources within the responses, allowing clients to easily navigate and discover the API's capabilities without requiring external documentation.
+
+Additionally, a Postman collection is included in the codebase, to facilitate collaboration among team members by providing a standardized and shareable representation of the API specifications and configurations.
 
 ## Branches
 
