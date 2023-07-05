@@ -19,6 +19,8 @@ The **health check** endpoint is used to verify the operational status and healt
 
 **Integration tests** ensure that the API is functioning correctly and in accordance with the requirements.
 
+**Error logging** helps in identifying and troubleshooting issues within an application by providing a record of errors and exceptions that occur during its execution. In production, errors are logged to **Google Cloud Logging** service.
+
 ### Security
 
 All client data is stored in the database in an **encrypted** format. For this purpose, the API leverages the capabilities of **Google Cloud KMS (Key Management Service)**, a trusted managed service offering secure key storage, rotation, and encryption/decryption functionalities.
@@ -74,6 +76,7 @@ Sets the environment to `test` and runs the tests in watch mode, where Jest watc
 - [Joi](https://www.npmjs.com/package/joi) - a library for validating JavaScript objects.
 - [@google-cloud/kms](https://www.npmjs.com/package/@google-cloud/kms) - Google Cloud Key Management Service (KMS) API client for Node.js.
 - [Winston](https://www.npmjs.com/package/winston) - a library for logging and managing messages in a Node.js application.
+- [@google-cloud/logging-winston](https://www.npmjs.com/package/@google-cloud/logging-winston) - provides Google Cloud Logging transport for Winston logger.
 - [dotenv](https://www.npmjs.com/package/dotenv) - a library for loading environment variables from a .env file.
 - [cors](https://www.npmjs.com/package/cors) - Node.js CORS middleware for setting Cross-Origin Resource Sharing policy.
 - [helmet](https://www.npmjs.com/package/helmet) - Helmet helps secure Express apps by setting HTTP response headers.
