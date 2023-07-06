@@ -23,6 +23,11 @@ The **health check** endpoint is used to verify the operational status and healt
 
 All client data is stored in the database in an **encrypted** format. For this purpose, the API leverages the capabilities of **Google Cloud KMS (Key Management Service)**, a trusted managed service offering secure key storage, rotation, and encryption/decryption functionalities.
 
+### Performance
+
+**Pagination** is implemented to improve API performance. Paginating the results allows to retrieve and process smaller chunks of data at a time. In particular, this will enable more efficient use of the Google KMS resources and may enhance the perceived responsiveness of the API.
+It may also help with scalability, by allowing to handle a large number of concurrent requests more effectively.
+
 ### API Documentation
 
 The API is self-discoverable thanks to the use of **HATEOAS**. HATEOAS provide links to related resources within the responses, allowing clients to easily navigate and discover the API's capabilities without requiring external documentation.

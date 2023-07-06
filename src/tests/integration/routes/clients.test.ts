@@ -87,6 +87,16 @@ describe('/api/v1/clients', () => {
         expect(clients.length).toBe(2);
       });
 
+      it('should return paginated results', async () => {
+        const res = await act();
+        const { pagination } = res.body;
+        expect(pagination).toBeTruthy();
+        expect(pagination.currentPage).toBe(1);
+        expect(pagination.pageSize).toBeTruthy();
+        expect(pagination.totalCount).toBe(2);
+        expect(pagination.totalPages).toBeTruthy();
+      });
+
       it('should include HATEOAS in the response', async () => {
         const res = await act();
         const { _links } = res.body;

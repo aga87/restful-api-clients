@@ -29,7 +29,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{base_url}}/api/v1/clients",
+					"raw": "{{base_url}}/api/v1/clients?page=1&pageSize=10",
 					"host": [
 						"{{base_url}}"
 					],
@@ -37,6 +37,16 @@
 						"api",
 						"v1",
 						"clients"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "1"
+						},
+						{
+							"key": "pageSize",
+							"value": "10"
+						}
 					]
 				}
 			},
@@ -49,7 +59,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n  \"firstName\": \"Jane\",\n  \"lastName\": \"Doe\",\n   \"address\": {\n      \"postalCode\": \"1000aa\"\n  }\n}",
+					"raw": "{\n  \"firstName\": \"Jane\",\n  \"lastName\": \"Doe\",\n  \"address\": {\n    \"postalCode\": \"1000aa\"\n  }\n}",
 					"options": {
 						"raw": {
 							"language": "json"
