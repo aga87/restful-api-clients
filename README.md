@@ -47,6 +47,10 @@ Additionally, a Postman collection is included in the codebase, to facilitate co
 
 ## Available Scripts
 
+### `npm install`
+
+Downloads and installs all dependencies and packages necessary to run the application.
+
 ### `npm start`
 
 Starts the application by running the compiled JavaScript file located at `dist/index.js`. This script is typically used in a production environment.
