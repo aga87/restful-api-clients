@@ -34,7 +34,11 @@ export const getClients: RequestHandler = async (
     return res.send({
       clients,
       pagination: pagination.pagination,
-      _links: [selfHATEOAS(req), clientsHATEOAS().addClient]
+      _links: [
+        selfHATEOAS(req),
+        clientsHATEOAS().clients,
+        clientsHATEOAS().addClient
+      ]
     });
   } catch (err) {
     next(err);
