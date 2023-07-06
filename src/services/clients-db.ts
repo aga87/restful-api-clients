@@ -1,12 +1,23 @@
 import { Client } from '../models/Client';
 import type { ClientRecord, NewClient } from '../types/types';
 
-export const getClientsFromDB = async (): Promise<ClientRecord[]> => {
+export const getClientsFromDB = async ({
+  skip,
+  pageSize
+}: {
+  skip: number;
+  pageSize: number;
+}): Promise<ClientRecord[]> => {
   const clients: ClientRecord[] = await Client.find({})
     .select('-__v')
-    .sort({ name: 1 });
+    .sort({ name: 1 })
+    .skip(skip)
+    .limit(pageSize);
   return clients;
 };
+
+export const getClientsTotalInDB = async (): Promise<number> =>
+  await Client.countDocuments({});
 
 export const addClientToDB = async (
   newClient: NewClient

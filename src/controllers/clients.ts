@@ -1,7 +1,12 @@
 import { RequestHandler, Request, Response, NextFunction } from 'express';
-import { getClientsFromDB, addClientToDB } from '../services/clients-db';
+import {
+  addClientToDB,
+  getClientsFromDB,
+  getClientsTotalInDB
+} from '../services/clients-db';
 import { validateClientSchema } from '../models/Client';
 import { clientsHATEOAS, selfHATEOAS } from '../utils/hateoas';
+import { getPagination } from '../utils/getPagination';
 
 export const getClients: RequestHandler = async (
   req: Request,
@@ -9,9 +14,26 @@ export const getClients: RequestHandler = async (
   next: NextFunction
 ) => {
   try {
-    const clients = await getClientsFromDB();
+    const { page, pageSize } = req.query;
+
+    const totalCount = await getClientsTotalInDB();
+
+    const pagination = getPagination({
+      page: page,
+      pageSize: pageSize,
+      defaultPageSize: 10,
+      maxPageSize: 20,
+      totalCount
+    });
+
+    const clients = await getClientsFromDB({
+      skip: pagination.skip,
+      pageSize: pagination.pagination.pageSize
+    });
+
     return res.send({
       clients,
+      pagination: pagination.pagination,
       _links: [selfHATEOAS(req), clientsHATEOAS().addClient]
     });
   } catch (err) {
