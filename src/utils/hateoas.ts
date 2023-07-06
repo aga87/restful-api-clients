@@ -27,9 +27,21 @@ export const healthCheckHATEOAS = () => ({
 
 export const clientsHATEOAS = () => ({
   clients: {
-    href: `${baseURL}/api/v1/clients`,
+    href: `${baseURL}/api/v1/clients?page=1&pageSize=10`,
     rel: 'clients',
-    method: 'GET'
+    method: 'GET',
+    params: {
+      page: {
+        type: 'query',
+        required: false,
+        default: 1
+      },
+      pageSize: {
+        type: 'query',
+        required: false,
+        default: 10
+      }
+    }
   },
   addClient: {
     href: `${baseURL}/api/v1/clients`,

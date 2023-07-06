@@ -29,6 +29,11 @@ CORS middleware is used to set and enforce the **Cross-Origin Resource Sharing p
 
 Additionally, Helmet middleware helps to secure the API by setting HTTP response headers that enhance security.
 
+### Performance
+
+**Pagination** is implemented to improve API performance. Paginating the results allows to retrieve and process smaller chunks of data at a time. In particular, this will enable more efficient use of the Google KMS resources and may enhance the perceived responsiveness of the API.
+It may also help with scalability, by allowing to handle a large number of concurrent requests more effectively.
+
 ### API Documentation
 
 The API is self-discoverable thanks to the use of **HATEOAS**. HATEOAS provide links to related resources within the responses, allowing clients to easily navigate and discover the API's capabilities without requiring external documentation.
